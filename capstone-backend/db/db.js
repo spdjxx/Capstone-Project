@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import PostModel from "./Post.js";
 import UserModel from "./User.js";
 import LikeModel from "./Likes.js";
+import EventModel from "./Event.js";
 
 let db;
 
@@ -19,11 +20,14 @@ if (process.env.DATABASE_URL === undefined) {
 const Post = PostModel(db);
 const User = UserModel(db);
 const Like = LikeModel(db);
+const Event = EventModel(db);
 
 User.hasMany(Like, { as: "PostLikes" });
 Post.hasMany(Like, { as: "PostLikes" });
 Like.belongsTo(User);
 Like.belongsTo(Post);
+User.hasMany(Event);
+Event.belongsTo(User);
 
 const connectToDB = async () => {
     try {
@@ -39,4 +43,4 @@ const connectToDB = async () => {
 
 await connectToDB();
 
-export { db, Post, User, Like };
+export { db, Post, User, Like, Event };

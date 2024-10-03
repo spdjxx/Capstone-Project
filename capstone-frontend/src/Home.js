@@ -2,6 +2,7 @@ import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import backendUrl from "./backendUrl";
+import "./Home.css";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -9,6 +10,8 @@ const Home = () => {
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState("");
     const [name, setName] = useState("");
+    const [events, setEvents] = useState([]); // State for events
+    const [newEvent, setNewEvent] = useState("");
 
     useEffect(() => {
         const makeAPICall = async () => {
@@ -28,12 +31,17 @@ const Home = () => {
 
         const res = await fetch(url + `/post`, {
             method: "POST",
+            // method to send request to server
             headers: {
                 "Content-Type": "application/json",
             },
+            // sending JSON data
             body: JSON.stringify({
+                // convert object to string
                 name,
+                // send name
                 content: newPost,
+                // sends content
             }),
         });
         const data = await res.json();
@@ -51,17 +59,25 @@ const Home = () => {
         setName(event.target.value); // Update the name state
     };
 
-    const handleLike = (postId) => {
-        fetch(`${backendUrl()}/like`, {
+    const handleLike = async (postId) => {
+        const res = await fetch(`${backendUrl()}/like`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                email: user.primaryEmailAddress.emailAddress,
                 postId,
             }),
         });
+
+        const data = await res.json();
+        setPosts(data.posts);
+    };
+
+    const handleEventSubmit = (event) => {
+        event.preventDefault();
+        setEvents([...events, newEvent]); // Add new event to the list
+        setNewEvent(""); // Clear input
     };
 
     return (
@@ -128,6 +144,24 @@ const Home = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+            {/* Event List */}
+            <div className="events-list">
+                <h3>Upcoming Events</h3>
+                <form onSubmit={handleEventSubmit}>
+                    <input
+                        type="text"
+                        value={newEvent}
+                        onChange={(e) => setNewEvent(e.target.value)}
+                        placeholder="Add new event"
+                    />
+                    <button type="submit">+</button>
+                </form>
+                <ul>
+                    {events.map((event, index) => (
+                        <li key={index}>{event}</li>
+                    ))}
+                </ul>
             </div>
         </div>
     );

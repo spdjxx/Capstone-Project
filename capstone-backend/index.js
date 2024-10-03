@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { db, Post, User } from "./db/db.js";
+import { db, Post, User, Event } from "./db/db.js";
 
 const server = express();
 server.use(cors());
@@ -47,26 +47,50 @@ server.post("/signup", async (req, res) => {
     }
 });
 
-server.post("/like", async (req, res) => {
-    const { email, postId } = req.body;
-    const user = await User.findOne({ where: { email } });
-
-    // try {
-    await Like.create({ userId: user.id, postId });
-    res.status(200).send({ message: "Post liked" });
-    // } catch (error) {
-    //     res.status(500).send({ error: "Error liking post" });
-    // }
+server.post("/events", async (req, res) => {
+    const { eventName, eventDate, isCanceled } = req.body;
+    const newEvent = { eventName, eventDate, isCanceled };
 });
 
-server.delete("/like", async (req, res) => {
-    const { userId, postId } = req.body;
+server.get("/events", (req, res) => {
+    res.json(allEvents);
+});
 
+server.post("/login", async (req, res) => {
     try {
-        await Like.destroy({ where: { userId, postId } });
-        res.status(200).send({ message: "Post unliked" });
+        const { email, password } = req.body;
+
+        // Check if email and password are provided
+        if (!email || !password) {
+            return res
+                .status(400)
+                .send({ message: "Email and password are required" });
+        }
+
+        // Find the user by email
+        const user = await User.findOne({ where: { email } });
+
+        // If the user does not exist
+        if (!user) {
+            return res
+                .status(401)
+                .send({ message: "Invalid email or password" });
+        }
+
+        // Check password
+        if (user.password !== password) {
+            return res
+                .status(401)
+                .send({ message: "Invalid email or password" });
+        }
+
+        // Successful login
+        res.status(200).send({ message: "Login successful", user });
     } catch (error) {
-        res.status(500).send({ error: "Error unliking post" });
+        console.error("Error during login:", error);
+        res.status(500).send({
+            error: "Error logging in, please try again later.",
+        });
     }
 });
 

@@ -1,0 +1,35 @@
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(160, 128, 102);
+}
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    height: 60px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 1rem;
+}
+
+.navbar-end {
+    display: flex;
+    align-items: center;
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import backendUrl from "./backendUrl";
 
 const SignUpModal = ({ onClose }) => {
     const [userType, setUserType] = useState(""); // Track user type
@@ -8,6 +9,7 @@ const SignUpModal = ({ onClose }) => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,8 +41,10 @@ const SignUpModal = ({ onClose }) => {
             userType,
         };
 
+        let url = backendUrl();
+
         try {
-            const response = await fetch("http://localhost:3001/signup", {
+            const response = await fetch(url + "/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -52,11 +56,15 @@ const SignUpModal = ({ onClose }) => {
                 const data = await response.json();
                 console.log("User created:", data);
                 handleClose(); // Close modal
+                navigate(userType === "teacher" ? "/" : "/parents");
             } else {
+                const errorData = await response.json();
                 console.error("Error creating user");
+                setError(errorData.message || "Error creating user.");
             }
         } catch (error) {
             console.error("Error:", error);
+            setError("Network error, please try again.");
         }
 
         if (userType === "teacher") {

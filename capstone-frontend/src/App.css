@@ -4,14 +4,15 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: Nunito, sans-serif;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-image: url("img/sprinkle.jpg");
+    background-image: url("img/flowers.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 header {
@@ -23,11 +24,9 @@ main {
     padding: 20px;
 }
 
-/* .mainPage {
-    border: 1px solid gray;
-    background-color: white;
-    margin-top: 50px;
-} */
+.mainPage {
+    padding-left: 200px;
+}
 .message-header {
     display: flex;
     justify-content: space-between;
@@ -61,9 +60,10 @@ footer {
 #login {
     text-align: center;
     padding: 100px;
-    border: 1px solid gray;
     background-color: white;
     margin-top: 100px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .profile {
@@ -86,12 +86,14 @@ footer {
 }
 
 .posts-list {
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
     background-color: white;
     text-align: center;
     max-width: 600px;
     margin-top: 20px;
     margin: 20px auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .post-box {
@@ -100,6 +102,9 @@ footer {
     margin-bottom: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    padding: 30px;
 }
 
 .post-box p {
@@ -110,20 +115,22 @@ footer {
 
 .post-actions {
     margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .post-actions button {
     margin-right: 10px;
     padding: 5px 10px;
     border: none;
-    background-color: #007bff;
+    background-color: #b2967d;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .post-actions button:hover {
-    background-color: #0056b3;
+    background-color: #b2967d;
 }
 
 .post-comments {
@@ -290,5 +297,5 @@ footer {
 }
 
 .compose-icon-btn:hover {
-    background-color: #357ae8; /* Darker blue on hover */
+    background-color: #b2967d;
 }

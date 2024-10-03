@@ -1,41 +1,79 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Navigate,
+    useLocation,
+} from "react-router-dom";
 import "./App.css";
 import Home from "./Home.js";
 import Login from "./Login.js";
 import Inbox from "./Inbox.js";
 import Settings from "./Settings.js";
-import SignUpModal from "./SignUpModal";
 import NavBar from "./NavBar";
 import ParentHome from "./ParentHome.js";
+import SignUpModal from "./SignUpModal";
+import { ToastContainer, toast } from "react-toastify";
+
+const ProtectedRoute = ({ component: Component }) => {
+    const user = localStorage.getItem("user");
+    const location = useLocation();
+
+    if (!user) {
+        alert("You need to log in to view this page.");
+        return <Navigate to="/login" state={{ from: location }} />;
+    }
+
+    return <Component />;
+};
 
 const myRoutes = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,
+        element: (
+            <>
+                <NavBar />
+                <ProtectedRoute component={Home} />
+            </>
+        ),
     },
     {
-        path: "/login", // This is no longer going to be used, so rename it to make things less confusing
+        path: "/login",
         element: <Login />,
     },
     {
         path: "/Inbox",
-        element: <Inbox />,
+        element: (
+            <>
+                <NavBar />
+                <ProtectedRoute component={Inbox} />
+            </>
+        ),
     },
     {
         path: "/Settings",
-        element: <Settings />,
+        element: (
+            <>
+                <NavBar />
+                <ProtectedRoute component={Settings} />
+            </>
+        ),
     },
     {
         path: "/Parents",
-        element: <ParentHome />,
+        element: (
+            <>
+                <NavBar />
+                <ProtectedRoute component={Settings} />
+            </>
+        ),
     },
 ]);
 
 function App() {
     return (
         <div>
-            <NavBar />
             <RouterProvider router={myRoutes} />
+            <ToastContainer />
         </div>
     );
 }
