@@ -41,3 +41,29 @@
 .events-list input {
     margin-right: 10px;
 }
+.events-list h3 {
+    margin-bottom: 10px;
+}
+
+.events-list ul {
+    padding: 0;
+}
+
+.events-list li {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.events-list li:last-child {
+    border-bottom: none;
+}
+
+.event-title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.event-date-time {
+    font-size: 0.9em; /* Smaller text */
+    margin: 5px 0;
+    color: #555; /* Lighter text color */
+}

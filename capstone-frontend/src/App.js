@@ -12,7 +12,6 @@ import Settings from "./Settings.js";
 import NavBar from "./NavBar";
 import ParentHome from "./ParentHome.js";
 import SignUpModal from "./SignUpModal";
-import { ToastContainer, toast } from "react-toastify";
 
 const ProtectedRoute = ({ component: Component }) => {
     const user = localStorage.getItem("user");
@@ -63,7 +62,7 @@ const myRoutes = createBrowserRouter([
         element: (
             <>
                 <NavBar />
-                <ProtectedRoute component={Settings} />
+                <ProtectedRoute component={ParentHome} />
             </>
         ),
     },
@@ -73,7 +72,6 @@ function App() {
     return (
         <div>
             <RouterProvider router={myRoutes} />
-            <ToastContainer />
         </div>
     );
 }

@@ -47,15 +47,6 @@ server.post("/signup", async (req, res) => {
     }
 });
 
-server.post("/events", async (req, res) => {
-    const { eventName, eventDate, isCanceled } = req.body;
-    const newEvent = { eventName, eventDate, isCanceled };
-});
-
-server.get("/events", (req, res) => {
-    res.json(allEvents);
-});
-
 server.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -91,6 +82,54 @@ server.post("/login", async (req, res) => {
         res.status(500).send({
             error: "Error logging in, please try again later.",
         });
+    }
+});
+
+server.post("/event", async (req, res) => {
+    try {
+        const { name, date } = req.body;
+        console.log(req.body);
+
+        const newEvent = await Event.create({ name, date });
+        res.status(201).send({ message: "Event created", event: newEvent });
+    } catch (error) {
+        console.error("Error creating event:", error);
+        res.status(500).send({ error: "Error creating event" });
+    }
+});
+
+server.get("/event", async (req, res) => {
+    try {
+        const events = await Event.findAll({
+            order: [["date", "DESC"]],
+        });
+        res.send({ events });
+    } catch (error) {
+        console.error("Error fetching events:", error.message); // Log full error
+        res.status(500).send(`Error fetching events: ${error.message}`); // Return full error to client
+    }
+});
+
+server.post("/message", async (req, res) => {
+    try {
+        const { recipient, messageBody } = req.body;
+        const newMessage = await Message.create({ recipient, messageBody });
+        res.status(201).send({ message: "Message sent", message: newMessage });
+    } catch (error) {
+        console.error("Error sending message:", error);
+        res.status(500).send({ error: "Error sending message" });
+    }
+});
+
+server.get("/message", async (req, res) => {
+    try {
+        const messages = await Message.findAll({
+            order: [["createdAt", "DESC"]], // Sort messages by creation date
+        });
+        res.send({ messages });
+    } catch (error) {
+        console.error("Error fetching messages:", error.message);
+        res.status(500).send(`Error fetching messages: ${error.message}`);
     }
 });
 

@@ -26,8 +26,6 @@ User.hasMany(Like, { as: "PostLikes" });
 Post.hasMany(Like, { as: "PostLikes" });
 Like.belongsTo(User);
 Like.belongsTo(Post);
-User.hasMany(Event);
-Event.belongsTo(User);
 
 const connectToDB = async () => {
     try {

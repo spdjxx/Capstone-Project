@@ -12,14 +12,38 @@ const Home = () => {
     const [name, setName] = useState("");
     const [events, setEvents] = useState([]); // State for events
     const [newEvent, setNewEvent] = useState("");
+    const [eventDate, setEventDate] = useState("");
+    const [eventTime, setEventTime] = useState("");
 
     useEffect(() => {
         const makeAPICall = async () => {
             let url = backendUrl();
 
-            const res = await fetch(url + `/post`);
-            const data = await res.json();
-            setPosts(data.posts);
+            try {
+                const res = await fetch(url + `/post`);
+                if (!res.ok) {
+                    throw new Error(
+                        `Failed to fetch posts: ${res.status} ${res.statusText}`
+                    );
+                }
+                const data = await res.json();
+                setPosts(data.posts);
+            } catch (error) {
+                console.error("Error fetching posts:", error.message);
+            }
+
+            try {
+                const eventRes = await fetch(url + `/event`);
+                if (!eventRes.ok) {
+                    throw new Error(
+                        `Failed to fetch events: ${eventRes.status} ${eventRes.statusText}`
+                    );
+                }
+                const eventData = await eventRes.json();
+                setEvents(eventData.events);
+            } catch (error) {
+                console.error("Error fetching events:", error.message);
+            }
         };
         makeAPICall();
     }, []);
@@ -44,6 +68,13 @@ const Home = () => {
                 // sends content
             }),
         });
+
+        if (!res.ok) {
+            throw new Error(
+                `Failed to create post: ${res.status} ${res.statusText}`
+            );
+        }
+
         const data = await res.json();
         setPosts(data.posts);
 
@@ -51,9 +82,9 @@ const Home = () => {
         setName("");
     };
 
-    const createPost = (event) => {
-        setNewPost(event.target.value); // Update the newPost state
-    };
+    // const createPost = (event) => {
+    //     setNewPost(event.target.value); // Update the newPost state
+    // };
 
     const handleNameChange = (event) => {
         setName(event.target.value); // Update the name state
@@ -74,10 +105,85 @@ const Home = () => {
         setPosts(data.posts);
     };
 
-    const handleEventSubmit = (event) => {
+    const handleEventSubmit = async (event) => {
         event.preventDefault();
-        setEvents([...events, newEvent]); // Add new event to the list
-        setNewEvent(""); // Clear input
+
+        if (!eventDate || !eventTime) {
+            alert("Please select a date and time for the event.");
+            return;
+        }
+
+        const eventObj = {
+            name: newEvent,
+            date: eventDate,
+            // time: eventTime,
+        };
+
+        let url = backendUrl();
+        try {
+            const res = await fetch(url + "/event", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(eventObj),
+            });
+            if (!res.ok) {
+                throw new Error(
+                    `Failed to create event: ${res.status} ${res.statusText}`
+                );
+            }
+            const data = await res.json();
+            setEvents([...events, data.event]); // Add new event to the list
+            setNewEvent(""); // Clear input
+            setEventDate("");
+            // setEventTime("");
+        } catch (error) {
+            console.error("Error submitting event:", error.message);
+        }
+    };
+
+    // const formatTime = (time) => {
+    //     const [hours, minutes] = time.split(":");
+    //     const formattedHours = hours % 12 || 12; // Converts to 12-hour format
+    //     const ampm = hours < 12 ? "AM" : "PM"; // Determines AM/PM
+    //     return `${formattedHours}:${minutes} ${ampm}`;
+    // };
+
+    const formatDate = (date) => {
+        const options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        };
+        const dateObj = new Date(date);
+
+        const formattedDate = dateObj.toLocaleDateString("en-US", options);
+
+        // Adding 'st', 'nd', 'rd', 'th' to the day
+        const day = dateObj.getDate();
+        let daySuffix;
+
+        if (day === 1 || day === 21 || day === 31) {
+            daySuffix = "st";
+        } else if (day === 2 || day === 22) {
+            daySuffix = "nd";
+        } else if (day === 3 || day === 23) {
+            daySuffix = "rd";
+        } else {
+            daySuffix = "th";
+        }
+
+        return formattedDate.replace(/\d+/, day + daySuffix);
+    };
+
+    // Function to format event display
+    const formatEventDateTime = (event) => {
+        const formattedDate = new Date(event.date).toLocaleDateString(); // Formats the date
+        // const formattedTime = formatTime(event.time); // Formats the time
+        return `${formattedDate}' ;
+        `;
     };
 
     return (
@@ -155,11 +261,30 @@ const Home = () => {
                         onChange={(e) => setNewEvent(e.target.value)}
                         placeholder="Add new event"
                     />
+                    <input
+                        type="date"
+                        value={eventDate}
+                        onChange={(e) => setEventDate(e.target.value)}
+                    />
+                    {/* <input
+                        type="time"
+                        value={eventTime}
+                        onChange={(e) => setEventTime(e.target.value)}
+                    /> */}
                     <button type="submit">+</button>
                 </form>
                 <ul>
                     {events.map((event, index) => (
-                        <li key={index}>{event}</li>
+                        <li key={index}>
+                            <strong className="event-name">
+                                {event ? event.name : "No name"}
+                            </strong>
+                            <p className="event-date-time">
+                                {event
+                                    ? formatEventDateTime(event)
+                                    : "No Date/Time"}
+                            </p>
+                        </li>
                     ))}
                 </ul>
             </div>

@@ -1,20 +1,19 @@
 import { DataTypes } from "sequelize";
 
-const EventModel = (sequelize) => {
-    return sequelize.define("Event", {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        },
+const EventModel = (db) => {
+    return db.define("Event", {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
         date: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
         },
+        // time: {
+        //     type: DataTypes.STRING,
+        //     allowNull: false,
+        // },
     });
 };
 

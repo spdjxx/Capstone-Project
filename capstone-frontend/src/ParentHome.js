@@ -2,8 +2,6 @@ import React from "react";
 import backendUrl from "./backendUrl";
 import { useState, useEffect } from "react";
 
-console.log(backendUrl);
-
 function ParentHome() {
     const [posts, setPosts] = useState([]);
     const [events, setEvents] = useState([]);
